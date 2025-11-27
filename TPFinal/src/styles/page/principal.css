@@ -1,0 +1,16 @@
+.hero{
+    height:fit-content;
+    max-width: 100%;
+    margin: auto;
+    padding: 2rem;
+}
+.hero-wrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    gap: 1.5rem;
+
+}
