@@ -1,16 +1,41 @@
+/* Par Alex */
+/* PAGE BIENVENUE */
 .hero{
-    height:fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
     max-width: 100%;
-    margin: auto;
     padding: 2rem;
+    background: url('/public/galaxie_background.png');
 }
 .hero-wrapper{
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    text-align: center;
     padding: 2rem;
     gap: 1.5rem;
 
+}
+/* PAGE JEU */
+.experience_test{
+    display: flex;
+    justify-content: center;
+    max-width: 100%;
+    align-items: center;
+    margin-top:auto;
+    height: 80vh;
+
+    background-color: rgba(104, 62, 172, 0.616);
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+
+    display: none;
+}
+.experience-test-wrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
 }
