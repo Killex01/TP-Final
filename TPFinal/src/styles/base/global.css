@@ -1,0 +1,12 @@
+body{
+    background: #050114;
+    background: linear-gradient(0deg, rgba(5, 1, 20, 1) 26%, rgba(48, 29, 105, 1) 65%);
+    color: white;
+    background-size: 200% 200%;
+}
+
+header, footer {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+}
