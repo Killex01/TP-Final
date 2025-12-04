@@ -1,83 +1,115 @@
 // grab canvas from html and get "context" to make use of canvas API
 const canvas = document.querySelector('canvas')
-const c = canvas.getContext('2d')
+const ctx = canvas.getContext('2d')
 
 // make canvas full width and height of the screen
-canvas.style.width = 1000 + "px";
-canvas.style.height = 1000 + "px";
+canvas.width = 1000;
+canvas.height = 1000;
 
-const rate = 10
+const updateRate = 10;
+let mouse = {x: 0, y: 0, f: 5};
+let heldObject = null;
+let objectArray = [];
+const drag = 2;
 
 //Temporary
-class shape {
-  constructor(pos, size, vel, img) {
+
+class Object {
+  constructor(pos, size, img) {
     this.x = pos.x;
     this.y = pos.y;
-    this.velX = vel.x;
-    this.velY = vel.y;
-    this.width = size.x;
-    this.height = size.y;
+    this.width = size.w;
+    this.height = size.h;
     this.img = img;
+
+    this.velX = 0;
+    this.velY = 0;
+    this.maxVel = 10;
   }
 
-  update(ctx) {
+  draw(ctx) {
+    const x = this.x - this.width/2;
+    const y = this.y - this.height/2;
+    ctx.fillStyle = "pink";
+    ctx.fillRect(x, y, this.width, this.height);
+    ctx.drawImage(this.img, x, y, this.width, this.height);
+    ctx.fillRect(this.x - 10/2, this.y - 10/2, 10, 10);
   }
-}
 
-class object extends shape {
-    constructor(pos, size, vel, img, mass) {
-      super(pos, size, vel, img);
-      //this.weight = mass;
-  }
-
-  update(ctx) {
-    super.update(ctx);
-
-    let t = new Image(this.width + "px", this.height + "px");
-    t.src = "/public_images/" + this.img;
-
-    ctx.drawImage(t, this.x - center.x, this.y - center.y);
-
-    /* this.x += this.velX;
-    this.y += this.velY;
-    this.velX = Math.max(0, Math.min(this.velX-0.1, 999)) * (this.velX/Math.abs(this.velX));
-    this.velY = Math.max(0, Math.min(this.velY-0.1, 999)) * (this.velY/Math.abs(this.velY)); */
+  getBorder() {
+    return {top: this.y - this.height/2, bottom: this.y + this.height/2, left: this.x - this.width/2, right: this.x + this.width/2};
   }
 }
 
-class particle extends shape {
-    constructor(pos, size, vel, img, fR, instC) {
-      super(pos, size, vel, img);
+const imageCrashOut = new Image();
+imageCrashOut.src = "/placeHolder_CrashOut.png";
+const imageFacts = new Image();
+imageFacts.src = "/placeHolder_Facts.png";
+const imageDontAsk = new Image();
+imageDontAsk.src = "/placeHolder_DontAsk.png";
 
-      this.fadeRate = fR;
-      this.instanceCount = instC;
+const objectCrashOut = new Object({x: 100, y: 100}, {w: 100, h: 100}, imageCrashOut);
+const objectFacts = new Object({x: 800, y: 200}, {w: 100, h: 100}, imageFacts);
+const objectDontAsk = new Object({x: 500, y: 600}, {w: 100, h: 100}, imageDontAsk);
+objectArray.push(objectCrashOut, objectFacts, objectDontAsk);
+
+function direction(from, to) {
+  return {x: to.x - from.x, y: to.y - from.y};
+}
+
+function distance(v) {
+  const addition = Math.pow(v.x, 2) + Math.pow(v.y, 2);
+  return Math.sqrt(addition, 2);
+}
+
+function normalized(dir, d) {
+  return {x: dir.x/d, y: dir.y/d};
+}
+
+function drawObjects() {
+    objectArray.forEach(element => {
+    element.draw(ctx);
+  });
+}
+
+function updateObjects() {
+  if (heldObject !== null) {
+    let mouseDir = direction({x: heldObject.x, y: heldObject.y}, {x: mouse.x, y: mouse.y});
+    mouseDir = normalized(mouseDir, distance(mouseDir));
+    heldObject.velX += mouseDir.x * mouse.f;
+    heldObject.velY += mouseDir.y * mouse.f;
+    //heldObject.x = mouse.x;
+    //heldObject.y = mouse.y;
   }
-
-  update(ctx) {
-    super.update(ctx);
-  }
+  objectArray.forEach(element => {
+    element.x += element.velX;
+    element.y += element.velY;
+    let vel = {x: element.velX, y: element.velY};
+    //vel.x *= (1 - drag * .1);
+    //vel.y *= (1 - drag * .1);
+    console.log(vel.x);
+  });
 }
-
-function checkCollisions({ col1, col2 }) {
-  return (
-    col1.x + col1.width >= col2.x - col2.width && // box1 right collides with box2 left
-    col2.x + col2.width >= col1.x - col1.width && // box2 right collides with box1 left
-    col1.y + col1.height >= col2.y - col2.height && // box1 bottom collides with box2 top
-    col2.y + col2.height >= col1.y - col1.height // box1 top collides with box2 bottom
-  )
-}
-
-const center = {
-  x: canvas.width / 2,
-  y: canvas.height / 2
-}
-
-let w = new object( {x: center.x, y: center.y}, {x: 1, y: 1}, {x: 0, y: 0}, "galaxie background.jpg", 0);
 
 function update() {
-  c.fillStyle = 'rgb(39,39,42)'
-  c.fillRect(0, 0, canvas.width, canvas.height)
-  w.update(c);
+  window.requestAnimationFrame(update)
+  ctx.fillStyle = "white";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  drawObjects();
+  updateObjects();
 }
 
-setInterval(update, rate);
+update();
+
+document.addEventListener("mousemove", (e) => {mouse.x = e.clientX, mouse.y = e.clientY});
+document.addEventListener("mousedown", () => {
+  objectArray.every(object => {
+    let border = object.getBorder();
+    if (mouse.x >= border.left && mouse.x <= border.right && mouse.y >= border.top && mouse.y <= border.bottom) {
+      heldObject = object;
+      return false;
+    }
+    return true;
+  });
+});
+document.addEventListener("mouseup", () => {heldObject = null});

@@ -7,7 +7,7 @@
     height: 80vh;
     max-width: 100%;
     padding: 2rem;
-    background: url('/public/galaxie_background.png');
+    background: url('/galaxie_background.png');
 }
 .hero-wrapper{
     display: flex;
