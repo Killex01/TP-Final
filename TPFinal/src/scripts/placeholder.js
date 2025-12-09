@@ -7,7 +7,7 @@ canvas.width = 1000;
 canvas.height = 1000;
 
 const updateRate = 10;
-let mouse = {x: 0, y: 0, f: 5};
+let mouse = {x: 0, y: 0, f: 0.5};
 let heldObject = null;
 let objectArray = [];
 const drag = 2;
@@ -63,7 +63,13 @@ function distance(v) {
 }
 
 function normalized(dir, d) {
-  return {x: dir.x/d, y: dir.y/d};
+  dir.x = d > 0 ? dir.x/d : 0;
+  dir.y = d > 0 ? dir.y/d : 0;
+  return {x: dir.x, y: dir.y};
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(value, max));
 }
 
 function drawObjects() {
@@ -76,18 +82,28 @@ function updateObjects() {
   if (heldObject !== null) {
     let mouseDir = direction({x: heldObject.x, y: heldObject.y}, {x: mouse.x, y: mouse.y});
     mouseDir = normalized(mouseDir, distance(mouseDir));
-    heldObject.velX += mouseDir.x * mouse.f;
-    heldObject.velY += mouseDir.y * mouse.f;
+    //heldObject.velX = mouseDir.x > 0 ? clamp(heldObject.velX + mouseDir.x * mouse.f, 0, mouseDir.x * 5) : clamp(heldObject.velX + mouseDir.x * mouse.f, mouseDir.x * 5, 0);
+    heldObject.velX = clamp(heldObject.velX + mouseDir.x * mouse.f, -Math.abs(mouseDir.x * 5), Math.abs(mouseDir.x * 5));
+    heldObject.velY = clamp(heldObject.velY + mouseDir.y * mouse.f, -Math.abs(mouseDir.y * 5), Math.abs(mouseDir.y * 5));
+    //heldObject.velY = mouseDir.y > 0 ? clamp(heldObject.velY + mouseDir.y * mouse.f, 0, mouseDir.y * 5) : clamp(heldObject.velY + mouseDir.y * mouse.f, mouseDir.y * 5, 0);
+
+    //heldObject.x = mouseDir.x >= 0 ? clamp(heldObject.x + heldObject.velX, heldObject.x, mouse.x) : clamp(heldObject.x + heldObject.velX, mouse.x, heldObject.x);
+    heldObject.x = mouseDir.x >= 0 ? clamp(heldObject.x + heldObject.velX, -Infinity, mouse.x) : clamp(heldObject.x + heldObject.velX, mouse.x, Infinity);
+    heldObject.y = mouseDir.y >= 0 ? clamp(heldObject.y + heldObject.velY, -Infinity, mouse.y) : clamp(heldObject.y + heldObject.velY, mouse.y, Infinity);
+    console.log(heldObject.velX);
     //heldObject.x = mouse.x;
     //heldObject.y = mouse.y;
   }
   objectArray.forEach(element => {
+    if (element == heldObject) {return};
+    let velDir = direction({x: 0, y: 0}, {x: element.velX, y: element.velY});
+    velDir = normalized(velDir, distance(velDir));
+    velDir.x = Math.abs(velDir.x) * 0.1;
+    velDir.y = Math.abs(velDir.y) * 0.1;
     element.x += element.velX;
     element.y += element.velY;
-    let vel = {x: element.velX, y: element.velY};
-    //vel.x *= (1 - drag * .1);
-    //vel.y *= (1 - drag * .1);
-    console.log(vel.x);
+    element.velX = element.velX >= 0 ? clamp(element.velX - velDir.x, 0, element.velX) : clamp(element.velX + velDir.x, element.velX, 0);
+    element.velY = element.velY >= 0 ? clamp(element.velY - velDir.y, 0, element.velY) : clamp(element.velY + velDir.y, element.velY, 0);
   });
 }
 
