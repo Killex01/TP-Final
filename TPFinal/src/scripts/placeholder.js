@@ -12,6 +12,7 @@ let objectArray = [];
 let particleArray = [];
 const canvasPos = canvas.getBoundingClientRect();
 
+
 class Object {
   constructor(pos, size, img) {
     this.x = pos.x;
@@ -29,6 +30,8 @@ class Object {
     const x = this.x - this.width/2;
     const y = this.y - this.height/2;
     ctx.drawImage(this.img, x, y, this.width, this.height);
+    ctx.fillStyle = "Pink";
+    ctx.fillRect(this.x - 10/2, this.y - 10/2, 10, 10);
   }
 
   getBorder() {
@@ -66,7 +69,7 @@ imageBackground.src = "/galaxie_background.png";
 function initialize() {
   objectArray = [];
   particleArray = [];
-  addParticle({x: 500, y: 500}, {x: 500, y: 500}, 1000, 1000);
+  addParticle({x: 800, y: 355}, {x: 800, y: 355}, 1600, 710);
   const objectCrashOut = new Object({x: 100, y: 100}, {w: 200, h: 200}, imageAsteroid1);
   const objectFacts = new Object({x: 800, y: 200}, {w: 100, h: 100}, imageAsteroid2);
   const objectDontAsk = new Object({x: 500, y: 600}, {w: 400, h: 200}, imageSaturn);
@@ -160,17 +163,23 @@ initialize();
 
 function update() {
   window.requestAnimationFrame(update)
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(imageBackground, 0, 0, 1000, 1000);
+  ctx.fillRect(0 - canvasPos.left, 0 - canvasPos.top, canvas.width, canvas.height);
+  ctx.drawImage(imageBackground, 0, 0, 1600, 710);
   drawObjects();
   drawParticles();
   updateObjects();
   checkCollision();
+
+  ctx.fillStyle = "Pink";
+  ctx.fillRect(mouse.x - 10/2, mouse.y - 10/2, 10, 10);
 }
 
 update();
 
-document.addEventListener("mousemove", (e) => {mouse.x = e.clientX - canvasPos.left, mouse.y = e.clientY - canvasPos.top});
+document.addEventListener("mousemove", (e) => {
+  const rect = canvas.getBoundingClientRect();
+  mouse.x = e.clientX - rect.left, mouse.y = e.clientY - rect.top;
+});
 document.addEventListener("mousedown", () => {
   objectArray.every(object => {
     let border = object.getBorder();
