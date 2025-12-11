@@ -7,12 +7,10 @@ canvas.width = 1000;
 canvas.height = 1000;
 
 const updateRate = 10;
-let mouse = {x: 0, y: 0, f: 0.5};
+let mouse = {x: 0, y: 0, f: 2};
 let heldObject = null;
 let objectArray = [];
-const drag = 2;
-
-//Temporary
+let particleArray = [];
 
 class Object {
   constructor(pos, size, img) {
@@ -38,6 +36,24 @@ class Object {
 
   getBorder() {
     return {top: this.y - this.height/2, bottom: this.y + this.height/2, left: this.x - this.width/2, right: this.x + this.width/2};
+  }
+}
+
+class Particle extends Object {
+  constructor(pos, size, img, opacity) {
+    super(pos, size, img)
+    this.opacity = opacity;
+  }
+
+  draw(ctx) {
+    const x = this.x - this.width/2;
+    const y = this.y - this.height/2;
+    ctx.save();
+    ctx.globalAlpha = this.opacity;
+    ctx.drawImage(this.img, x, y, this.width, this.height);
+    this.opacity -= 0.05;
+    ctx.restore();
+    ctx.fillRect(this.x - 10/2, this.y - 10/2, 10, 10);
   }
 }
 
@@ -78,21 +94,28 @@ function drawObjects() {
   });
 }
 
+function drawParticles() {
+  particleArray.forEach(element => {
+    element.draw(ctx);
+    if (element.opacity <= 0) particleArray.splice(particleArray.indexOf(element), 1);
+  });
+}
+
+function addParticle(obj1, obj2) {
+  const dir = direction(obj1, obj2);
+  const particlePos = {x: obj1.x + dir.x/2, y: obj1.y + dir.y/2};
+  let particle = new Particle(particlePos, {w: 100, h: 100}, obj1.img, 2);
+  particleArray.push(particle);
+}
+
 function updateObjects() {
   if (heldObject !== null) {
     let mouseDir = direction({x: heldObject.x, y: heldObject.y}, {x: mouse.x, y: mouse.y});
     mouseDir = normalized(mouseDir, distance(mouseDir));
-    //heldObject.velX = mouseDir.x > 0 ? clamp(heldObject.velX + mouseDir.x * mouse.f, 0, mouseDir.x * 5) : clamp(heldObject.velX + mouseDir.x * mouse.f, mouseDir.x * 5, 0);
-    heldObject.velX = clamp(heldObject.velX + mouseDir.x * mouse.f, -Math.abs(mouseDir.x * 5), Math.abs(mouseDir.x * 5));
-    heldObject.velY = clamp(heldObject.velY + mouseDir.y * mouse.f, -Math.abs(mouseDir.y * 5), Math.abs(mouseDir.y * 5));
-    //heldObject.velY = mouseDir.y > 0 ? clamp(heldObject.velY + mouseDir.y * mouse.f, 0, mouseDir.y * 5) : clamp(heldObject.velY + mouseDir.y * mouse.f, mouseDir.y * 5, 0);
-
-    //heldObject.x = mouseDir.x >= 0 ? clamp(heldObject.x + heldObject.velX, heldObject.x, mouse.x) : clamp(heldObject.x + heldObject.velX, mouse.x, heldObject.x);
+    heldObject.velX = clamp(heldObject.velX + mouseDir.x * mouse.f, -Math.abs(mouseDir.x * heldObject.maxVel), Math.abs(mouseDir.x * heldObject.maxVel));
+    heldObject.velY = clamp(heldObject.velY + mouseDir.y * mouse.f, -Math.abs(mouseDir.y * heldObject.maxVel), Math.abs(mouseDir.y * heldObject.maxVel));
     heldObject.x = mouseDir.x >= 0 ? clamp(heldObject.x + heldObject.velX, -Infinity, mouse.x) : clamp(heldObject.x + heldObject.velX, mouse.x, Infinity);
     heldObject.y = mouseDir.y >= 0 ? clamp(heldObject.y + heldObject.velY, -Infinity, mouse.y) : clamp(heldObject.y + heldObject.velY, mouse.y, Infinity);
-    console.log(heldObject.velX);
-    //heldObject.x = mouse.x;
-    //heldObject.y = mouse.y;
   }
   objectArray.forEach(element => {
     if (element == heldObject) {return};
@@ -107,12 +130,34 @@ function updateObjects() {
   });
 }
 
+function checkCollision() {
+  objectArray.forEach(object => {
+    let objectBorder = object.getBorder();
+    let objectIndex = objectArray.indexOf(object);
+    for (let index = objectIndex; index < objectArray.length; index++) {
+      let otherObject = objectArray[index+1];
+      if (otherObject == null) return;
+      let otherBorder = otherObject.getBorder();
+      if (objectBorder.right >= otherBorder.left && objectBorder.left <= otherBorder.right && objectBorder.bottom >= otherBorder.top && objectBorder.top <= otherBorder.bottom) {
+        console.log("colliding");
+        console.log(otherObject.img);
+        objectArray.splice(objectArray.indexOf(object), 1);
+        objectArray.splice(objectArray.indexOf(otherObject), 1);
+
+        addParticle(object, otherObject);
+      }
+    }
+  });
+}
+
 function update() {
   window.requestAnimationFrame(update)
   ctx.fillStyle = "white";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   drawObjects();
+  drawParticles();
   updateObjects();
+  checkCollision();
 }
 
 update();
