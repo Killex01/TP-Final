@@ -1,2 +1,3 @@
 https://www.youtube.com/watch?v=F7iFnhSZe7o
 https://www.w3schools.com/css/css3_animations.asp
+https://chriscourses.com/blog/coding-collision-detection-in-javascript
