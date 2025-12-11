@@ -1,8 +1,7 @@
-// grab canvas from html and get "context" to make use of canvas API
+
 const canvas = document.querySelector('canvas')
 const ctx = canvas.getContext('2d')
 
-// make canvas full width and height of the screen
 canvas.width = 1000;
 canvas.height = 1000;
 
@@ -11,6 +10,7 @@ let mouse = {x: 0, y: 0, f: 2};
 let heldObject = null;
 let objectArray = [];
 let particleArray = [];
+const canvasPos = canvas.getBoundingClientRect();
 
 class Object {
   constructor(pos, size, img) {
@@ -28,10 +28,7 @@ class Object {
   draw(ctx) {
     const x = this.x - this.width/2;
     const y = this.y - this.height/2;
-    ctx.fillStyle = "pink";
-    ctx.fillRect(x, y, this.width, this.height);
     ctx.drawImage(this.img, x, y, this.width, this.height);
-    ctx.fillRect(this.x - 10/2, this.y - 10/2, 10, 10);
   }
 
   getBorder() {
@@ -53,21 +50,29 @@ class Particle extends Object {
     ctx.drawImage(this.img, x, y, this.width, this.height);
     this.opacity -= 0.05;
     ctx.restore();
-    ctx.fillRect(this.x - 10/2, this.y - 10/2, 10, 10);
   }
 }
 
-const imageCrashOut = new Image();
-imageCrashOut.src = "/placeHolder_CrashOut.png";
-const imageFacts = new Image();
-imageFacts.src = "/placeHolder_Facts.png";
-const imageDontAsk = new Image();
-imageDontAsk.src = "/placeHolder_DontAsk.png";
+const imageAsteroid1 = new Image();
+imageAsteroid1.src = "/asteroid_PNG2.png";
+const imageAsteroid2 = new Image();
+imageAsteroid2.src = "/asteroid_PNG6.png";
+const imageSaturn = new Image();
+imageSaturn.src = "/Saturn-PNG-Transparent-Image.png";
+const imageParticle = new Image();
+imageParticle.src = "/placeHolder_Facts.png";
 
-const objectCrashOut = new Object({x: 100, y: 100}, {w: 100, h: 100}, imageCrashOut);
-const objectFacts = new Object({x: 800, y: 200}, {w: 100, h: 100}, imageFacts);
-const objectDontAsk = new Object({x: 500, y: 600}, {w: 100, h: 100}, imageDontAsk);
-objectArray.push(objectCrashOut, objectFacts, objectDontAsk);
+function initialize() {
+  objectArray = [];
+  particleArray = [];
+  addParticle({x: 500, y: 500}, {x: 500, y: 500}, 1000, 1000);
+  const objectCrashOut = new Object({x: 100, y: 100}, {w: 200, h: 200}, imageAsteroid1);
+  const objectFacts = new Object({x: 800, y: 200}, {w: 100, h: 100}, imageAsteroid2);
+  const objectDontAsk = new Object({x: 500, y: 600}, {w: 400, h: 200}, imageSaturn);
+  const objectAnotherOne = new Object({x: 900, y: 800}, {w: 300, h: 200}, imageAsteroid1);
+  const objectAgain = new Object({x: 100, y: 400}, {w: 100, h: 200}, imageAsteroid2);
+  objectArray.push(objectCrashOut, objectFacts, objectDontAsk, objectAnotherOne, objectAgain);
+}
 
 function direction(from, to) {
   return {x: to.x - from.x, y: to.y - from.y};
@@ -101,10 +106,10 @@ function drawParticles() {
   });
 }
 
-function addParticle(obj1, obj2) {
+function addParticle(obj1, obj2, width, height) {
   const dir = direction(obj1, obj2);
   const particlePos = {x: obj1.x + dir.x/2, y: obj1.y + dir.y/2};
-  let particle = new Particle(particlePos, {w: 100, h: 100}, obj1.img, 2);
+  let particle = new Particle(particlePos, {w: width, h: height}, imageParticle, 2);
   particleArray.push(particle);
 }
 
@@ -144,11 +149,13 @@ function checkCollision() {
         objectArray.splice(objectArray.indexOf(object), 1);
         objectArray.splice(objectArray.indexOf(otherObject), 1);
 
-        addParticle(object, otherObject);
+        addParticle(object, otherObject, 200, 200);
       }
     }
   });
 }
+
+initialize();
 
 function update() {
   window.requestAnimationFrame(update)
@@ -162,7 +169,7 @@ function update() {
 
 update();
 
-document.addEventListener("mousemove", (e) => {mouse.x = e.clientX, mouse.y = e.clientY});
+document.addEventListener("mousemove", (e) => {mouse.x = e.clientX - canvasPos.left, mouse.y = e.clientY - canvasPos.top});
 document.addEventListener("mousedown", () => {
   objectArray.every(object => {
     let border = object.getBorder();
@@ -174,3 +181,4 @@ document.addEventListener("mousedown", () => {
   });
 });
 document.addEventListener("mouseup", () => {heldObject = null});
+document.addEventListener("keydown", (e) => {if (e.key == "t") initialize()});
