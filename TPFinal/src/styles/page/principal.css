@@ -17,8 +17,8 @@
     align-items: center;
     padding: 2rem;
     gap: 1.5rem;
-
 }
+
 /* PAGE JEU */
 .experience_test{
       /* background */
@@ -106,3 +106,7 @@
     from {opacity: 0;}
     to {opacity: 1;}
 }
+
+
+
+
