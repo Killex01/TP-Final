@@ -57,15 +57,15 @@ class Particle extends Object {
 }
 
 const imageAsteroid1 = new Image();
-imageAsteroid1.src = "/asteroid_PNG2.png";
+imageAsteroid1.src = "asteroid_PNG2.png";
 const imageAsteroid2 = new Image();
-imageAsteroid2.src = "/asteroid_PNG6.png";
+imageAsteroid2.src = "asteroid_PNG6.png";
 const imageSaturn = new Image();
-imageSaturn.src = "/Saturn-PNG-Transparent-Image.png";
+imageSaturn.src = "Saturn-PNG-Transparent-Image.png";
 const imageParticle = new Image();
-imageParticle.src = "/placeHolder_Facts.png";
+imageParticle.src = "placeHolder_Facts.png";
 const imageBackground = new Image();
-imageBackground.src = "/galaxie_background.png";
+imageBackground.src = "galaxie_background.png";
 function initialize() {
   objectArray = [];
   particleArray = [];
