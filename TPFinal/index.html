@@ -6,28 +6,35 @@
     <title>Acceuil</title>
   </head>
   <body>
-  <header><h1>Escapism</h1></header>
-  <div class="hero">
-    <div class="hero-wrapper">
-      <h2>Bienvenue à Escapism!</h2>
-      <p>Une expérience immersive sur notre galaxie interminable.</p>
-      <button class="bouton">Commencer l'aventure</button>
-      <a href="/canvasInteractive.html">YouCanRemoveLater</a>
-    </div>
-  </div>
-  <div class="experience_test">
-    <div class="experience-test-wrapper"> 
-      <h2>Testez votre expérience</h2>
-      <p>je suis un test</p>
-    </div>
-  </div>
-  <footer>
-    <div class="footer-content">
-      <p>&copy; 2025 Escapism. Tous droits réservés.</p>
+    <!-- haut de page -->
+    <header><h1>Escapism</h1></header>
+    <div id="hero" class="hero"> <!-- section hero -->
+      <div id="hero-wrapper" class="hero-wrapper">
+        <h2>Bienvenue à Escapism!</h2>
+        <p>Une expérience immersive sur notre galaxie interminable.</p> <!-- texte de bienvenue -->
+        <button id="bouton" class="bouton">Commencer l'aventure</button> <!-- bouton pour faire apparaitre la section du jeu -->
+        <a href="/canvasInteractive.html">YouCanRemoveLater</a>
       </div>
-  </footer>
+      <div id="experience-test" class="experience_test"> <!-- section du jeu -->
+          <div class="moon">
+            <img src="./public/pngtree-pixel-art-moon-png-image_10008610.png" alt="Lune" />
+          </div>
+          <div class="experience-test-wrapper"> 
+            <h2>Testez votre expérience</h2>
+            <p>met ton code de l'autre page ici quand tu as fini, masato (remplace juste le "p")</p>
+          </div>
+          <div class="jupiter">
+            <img src="./public/db8siqg-5bf31fee-df61-41c2-8a40-3581c95fb16f.png" alt="jupiter"/>
+          </div>
+      </div>
+    </div>
+    <footer>
+      <div class="footer-content"> <!-- bas de page -->
+        <p>&copy; 2025 Escapism. Tous droits réservés.</p>
+        </div>
+    </footer>
 
-    <script type="module" src="/src/main.js"></script>
+      <script type="module" src="/src/main.js"></script> <!-- lien vers le fichier main.js -->
   </body>
 </html>
 <!-- Parti Alex -->

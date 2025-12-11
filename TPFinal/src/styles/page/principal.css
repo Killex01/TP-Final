@@ -1,6 +1,7 @@
 /* Par Alex */
 /* PAGE BIENVENUE */
-.hero{
+.hero{ 
+    /* background */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -10,6 +11,7 @@
     background: url('/galaxie_background.png');
 }
 .hero-wrapper{
+    /* contenu */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -19,12 +21,14 @@
 }
 /* PAGE JEU */
 .experience_test{
+      /* background */
     display: flex;
     justify-content: center;
-    max-width: 100%;
+    width: 100%;
     align-items: center;
-    margin-top:auto;
-    height: 80vh;
+  
+    margin: 150px;
+    height: 70vh;
 
     background-color: rgba(104, 62, 172, 0.616);
     border-radius: 10px;
@@ -32,10 +36,73 @@
     text-align: center;
 
     display: none;
+    animation-name: transition;
+    animation-duration: 2s;
 }
+
 .experience-test-wrapper{
+        /* contenu */
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1rem;
+}
+.bouton{ 
+    /* style du bouton */
+    position: relative;
+    padding: 10px 22px;
+    background: rgb(174, 130, 231);
+    border-radius: 6px;
+    color: white;
+    border: none;
+    font-size: 18px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+.bouton:active{ 
+    /* quand tu click le bouton */
+    transform: scale(1.05);
+}
+.moon{
+    /* image lune */
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: 2;
+}
+.moon img{
+    /* image lune animation */
+    animation: tourner linear;
+    animation-duration: 6s;
+    animation-iteration-count: infinite;
+}
+.jupiter{
+    /* image jupiter */
+    height: 360px;
+    width: 360px;
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    z-index: 2;
+}
+.jupiter img{
+    /* image jupiter animation */
+    height: 270px;
+    width: 270px;
+    object-fit: contain;
+
+    animation: tourner linear;
+    animation-duration: 8s;
+    animation-iteration-count: infinite;
+}
+
+/* animations */
+@keyframes tourner { /* fait tourner les astres */
+    from {transform: rotate(0deg);}
+    to {transform: rotate(360deg);}
+}
+@keyframes transition { /* fait apparaitre la section du jeu */
+    from {opacity: 0;}
+    to {opacity: 1;}
 }
