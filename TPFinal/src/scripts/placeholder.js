@@ -2,8 +2,8 @@
 const canvas = document.querySelector('canvas')
 const ctx = canvas.getContext('2d')
 
-canvas.width = 1000;
-canvas.height = 1000;
+canvas.width = 1600;
+canvas.height = 710;
 
 const updateRate = 10;
 let mouse = {x: 0, y: 0, f: 2};
@@ -61,7 +61,8 @@ const imageSaturn = new Image();
 imageSaturn.src = "/Saturn-PNG-Transparent-Image.png";
 const imageParticle = new Image();
 imageParticle.src = "/placeHolder_Facts.png";
-
+const imageBackground = new Image();
+imageBackground.src = "/galaxie_background.png";
 function initialize() {
   objectArray = [];
   particleArray = [];
@@ -159,8 +160,8 @@ initialize();
 
 function update() {
   window.requestAnimationFrame(update)
-  ctx.fillStyle = "white";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(imageBackground, 0, 0, 1000, 1000);
   drawObjects();
   drawParticles();
   updateObjects();
