@@ -97,6 +97,53 @@
     animation-iteration-count: infinite;
 }
 
+/* v masato parti v */
+.stars img{
+    /* étoiles en arrière plan */
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    opacity: 0.8;
+ 
+    animation: sparkle linear;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+}
+#etoile-1{
+    top: 10%;
+    left: 15%;
+    animation-delay: 0s;
+}
+#etoile-2{
+    top: 30%;
+    right: 20%;
+    animation-delay: 1s;
+}
+#etoile-3{
+    bottom: 20%;
+    left: 25%;
+    animation-delay: 2s;
+}
+#etoile-4{
+    bottom: 15%;
+    right: 15%;
+    animation-delay: 3s;
+}
+#etoile-5{
+    top: 20%;
+    left: 45%;
+    animation-delay: 1s;
+}
+/* ^ masato parti ^ */
+ 
+@keyframes sparkle {
+/* fait scintiller les étoiles | masato */
+    0% {opacity: 0.5; transform: scale(1) rotate(0deg) }
+    50% {opacity: 1; transform: scale(1.2) rotate(-15deg);}
+    75% {opacity: 1; transform: scale(1.1) rotate(15deg);}
+    100% {opacity: 0.5; transform: scale(1) rotate(0deg);}
+ }
+
 /* animations */
 @keyframes tourner { /* fait tourner les astres */
     from {transform: rotate(0deg);}
